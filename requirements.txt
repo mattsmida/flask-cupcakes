@@ -1,0 +1,7 @@
+flask<3
+Werkzeug<3
+flask-sqlalchemy
+ipython
+psycopg2-binary
+sqlalchemy
+python-dotenv
