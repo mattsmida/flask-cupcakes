@@ -4,9 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+DEFAULT_IMAGE_URL = 'https://tinyurl.com/demo-cupcake'
+
 
 class Cupcake(db.Model):
-    # Needs a docstring
+    """ Characteristics about a cupcake. This class sets up the table and
+    handles relevant queries. """
 
     __tablename__ = "cupcakes"
 
@@ -34,7 +37,7 @@ class Cupcake(db.Model):
     image_url = db.Column(
         db.String(500),
         nullable=False,
-        default='https://tinyurl.com/demo-cupcake'  # Global for ease of change
+        default=DEFAULT_IMAGE_URL
     )
 
     def serialize(self):
