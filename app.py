@@ -100,31 +100,38 @@ def create_cupcake():
 
     return (jsonify(cupcake=serialized_cupcake), 201)
 
+
 @app.patch("/api/cupcakes/<int:cupcake_id>")
 def patch_cupcake(cupcake_id):
     """ Update a cupcake using the id passed in the URL
     Request body body may include flavor, size, rating and image data
     but not all fields are required
 
+    JSON request example:
+    {
+			"flavor": "vanilla",
+			"size": "big"
+    }
+
+    JSON response example (observe the change to flavor and size):
+    {
+        "cupcake": {
+            "flavor": "vanilla",
+            "id": 1,
+            "image_url": "https://tinyurl.com/demo-cupcake",
+            "rating": 5,
+            "size": "big"
+            }
+    }
+
     """
 
     cupcake = Cupcake.query.get_or_404(cupcake_id)
 
-    # cupcake.flavor = "not-flavor"
-
     cupcake_edits = request.json
 
-    for key in cupcake_edits:
-
-        # key is the key in cupcake edits
-        # cupcake_edits[key] = changed value]
-
-
-        print("cupcake.key", cupcake.key)
-
-        cupcake.key = cupcake_edits[key]
-
-
+    for key in cupcake_edits:            # TODO: Why didn't c[key] work?
+        setattr(cupcake, key, cupcake_edits[key])  # Is setattr() right?
 
     db.session.add(cupcake)
     db.session.commit()
@@ -132,3 +139,23 @@ def patch_cupcake(cupcake_id):
     serialized_cupcake = cupcake.serialize()
 
     return (jsonify(cupcake=serialized_cupcake), 200)
+
+
+@app.delete("/api/cupcakes/<int:cupcake_id>")
+def delete_cupcake(cupcake_id):
+    """ Delete a cupcake using the id passed in the URL.
+    No request body needed.
+
+    JSON response example of a successful deletion of cupcake id 27562:
+    {
+        "deleted": 27562
+    }
+
+    """
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+
+    db.session.delete(cupcake)
+    db.session.commit()
+
+    return (jsonify(deleted=cupcake_id), 200)
