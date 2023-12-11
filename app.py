@@ -99,3 +99,36 @@ def create_cupcake():
     serialized_cupcake = new_cupcake.serialize()
 
     return (jsonify(cupcake=serialized_cupcake), 201)
+
+@app.patch("/api/cupcakes/<int:cupcake_id>")
+def patch_cupcake(cupcake_id):
+    """ Update a cupcake using the id passed in the URL
+    Request body body may include flavor, size, rating and image data
+    but not all fields are required
+
+    """
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+
+    # cupcake.flavor = "not-flavor"
+
+    cupcake_edits = request.json
+
+    for key in cupcake_edits:
+
+        # key is the key in cupcake edits
+        # cupcake_edits[key] = changed value]
+
+
+        print("cupcake.key", cupcake.key)
+
+        cupcake.key = cupcake_edits[key]
+
+
+
+    db.session.add(cupcake)
+    db.session.commit()
+
+    serialized_cupcake = cupcake.serialize()
+
+    return (jsonify(cupcake=serialized_cupcake), 200)
