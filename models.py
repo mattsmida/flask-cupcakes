@@ -36,7 +36,7 @@ class Cupcake(db.Model):
         default='https://tinyurl.com/demo-cupcake'
     )
 
-    def serializer(self):
+    def serialize(self):
         return {
             'id': self.id,
             'flavor': self.flavor,
