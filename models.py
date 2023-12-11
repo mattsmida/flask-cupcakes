@@ -6,6 +6,7 @@ db = SQLAlchemy()
 
 
 class Cupcake(db.Model):
+    # Needs a docstring
 
     __tablename__ = "cupcakes"
 
@@ -33,7 +34,7 @@ class Cupcake(db.Model):
     image_url = db.Column(
         db.String(500),
         nullable=False,
-        default='https://tinyurl.com/demo-cupcake'
+        default='https://tinyurl.com/demo-cupcake'  # Global for ease of change
     )
 
     def serialize(self):

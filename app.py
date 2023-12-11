@@ -12,14 +12,17 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
 
+
 @app.get("/api/cupcakes")
 def list_all_cupcakes():
-    """ Returning JSON of all cupcakes """
+    """ Returning JSON of all cupcakes """  # Be more specific!
 
-    cupcakes = Cupcake.query.all()
+    cupcakes = Cupcake.query.all()   # This is the 3rd time I've been suggested to ORDER THIS STUFF!
+    # Use order_by(), perhaps by rating.
     serialized_cupcakes = [cupcake.serialize() for cupcake in cupcakes]
 
     return jsonify(cupcakes=serialized_cupcakes)
+
 
 @app.get("/api/cupcakes/<int:cupcake_id>")
 def get_single_cupcake_data(cupcake_id):
@@ -30,16 +33,23 @@ def get_single_cupcake_data(cupcake_id):
 
     return jsonify(cupcake=serialized_cupcake)
 
+
 @app.post("/api/cupcakes")
 def create_cupcake():
     """ Create a cupcake with flavor, size, rating, and image data """
+    # Needs to explain what you need to pass it! BE EXPLICIT HERE.
 
     flavor = request.json["flavor"]
     size = request.json["size"]
     rating = request.json["rating"]
-    image_url = request.json['image_url'] if request.json['image_url'] else None
 
-    # TODO bugfix line 40 about image_url 
+    try:   # This would be better as a .get()
+        image_url = request.json['image_url']
+    except KeyError:
+        image_url = None
+        # Specify in the docstring whether the image_url is optional,
+        # and decide on the behavior you want the app and api to have.
+
     new_cupcake = Cupcake(flavor=flavor,
                           size=size,
                           rating=rating,
@@ -52,3 +62,5 @@ def create_cupcake():
 
     return (jsonify(cupcake=serialized_cupcake), 201)
 
+# Give an example of the request in docsting
+# run in insomnia, copy into docstring, and paste it, and the response in docstring.
