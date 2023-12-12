@@ -1,11 +1,10 @@
+from models import db, Cupcake
+from app import app
+from unittest import TestCase
 import os
 
 os.environ["DATABASE_URL"] = 'postgresql:///cupcakes_test'
 
-from unittest import TestCase
-
-from app import app
-from models import db, Cupcake
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -106,8 +105,23 @@ class CupcakeViewsTestCase(TestCase):
 
             self.assertEqual(Cupcake.query.count(), 2)
 
-    # def test_patch_cupcake(self):
-    #     pass  # TODO: For Victor <3
+    def test_patch_cupcake(self):
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake_id}"
+            resp = client.patch(
+                url, json={"flavor": "cherry", "size": "x-large"})
+
+            self.assertEqual(resp.status_code, 200)
+
+            self.assertEqual(resp.json, {
+                "cupcake": {
+                    "id": int(self.cupcake_id),
+                    "flavor": "cherry",
+                    "size": "x-large",
+                    "rating": 5,
+                    "image_url": "http://test.com/cupcake.jpg"
+                }
+            })
 
     def test_delete_cupcake(self):
         with app.test_client() as client:
@@ -116,6 +130,4 @@ class CupcakeViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             data = resp.json
-            # self.assertEqual(Cupcake.query.get_or_404(self.cupcake_id), 404)
-            # It errors out if you make it 404!
             self.assertEqual(data, {"deleted": self.cupcake_id})

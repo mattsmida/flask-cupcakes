@@ -2,7 +2,7 @@
 
 import os
 from flask import Flask, jsonify, request
-from models import db, connect_db, Cupcake
+from models import db, connect_db, Cupcake, DEFAULT_IMAGE_URL
 from sqlalchemy import desc
 
 app = Flask(__name__)
@@ -130,8 +130,17 @@ def patch_cupcake(cupcake_id):
 
     cupcake_edits = request.json
 
-    for key in cupcake_edits:            # TODO: Why didn't c[key] work?
-        setattr(cupcake, key, cupcake_edits[key])  # Is setattr() right?
+    if cupcake_edits.get("flavor"):
+        cupcake.flavor = cupcake_edits['flavor']
+    if cupcake_edits.get("size"):
+        cupcake.size = cupcake_edits['size']
+    if cupcake_edits.get("rating"):
+        cupcake.rating = cupcake_edits['rating']
+    if cupcake_edits.get("image_url"):
+        if cupcake_edits["image_url"] == '':
+            cupcake.image_url = DEFAULT_IMAGE_URL
+        else:
+            cupcake.image_url = cupcake_edits["image_url"]
 
     db.session.add(cupcake)
     db.session.commit()
