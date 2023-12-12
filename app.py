@@ -105,6 +105,7 @@ def create_cupcake():
 def patch_cupcake(cupcake_id):
     """ Update a cupcake using the id passed in the URL
     Request body body may include flavor, size, rating and image data
+    # we need to know that image is image_url
     but not all fields are required
 
     JSON request example:
@@ -130,19 +131,19 @@ def patch_cupcake(cupcake_id):
 
     cupcake_edits = request.json
 
-    if cupcake_edits.get("flavor"):
+    if "flavor" in cupcake_edits:
         cupcake.flavor = cupcake_edits['flavor']
-    if cupcake_edits.get("size"):
+
+    if "size" in cupcake_edits:
         cupcake.size = cupcake_edits['size']
-    if cupcake_edits.get("rating"):
+    if "rating" in cupcake_edits:
         cupcake.rating = cupcake_edits['rating']
-    if cupcake_edits.get("image_url"):
+    if "image_url" in cupcake_edits:
         if cupcake_edits["image_url"] == '':
             cupcake.image_url = DEFAULT_IMAGE_URL
         else:
             cupcake.image_url = cupcake_edits["image_url"]
 
-    db.session.add(cupcake)
     db.session.commit()
 
     serialized_cupcake = cupcake.serialize()
