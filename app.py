@@ -1,7 +1,7 @@
 """Flask app for Cupcakes"""
 
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from models import db, connect_db, Cupcake, DEFAULT_IMAGE_URL
 from sqlalchemy import desc
 
@@ -13,6 +13,14 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
 
+
+
+@app.get("/")
+def show_cupcake_list():
+    """ Shows the homepage which has a list of all cupcakes and
+    a form to add a new cupcake. """
+
+    return render_template('cupcakes.html')
 
 @app.get("/api/cupcakes")
 def list_all_cupcakes():
@@ -32,6 +40,7 @@ def list_all_cupcakes():
         ]}
     """
 
+    breakpoint()
     cupcakes = Cupcake.query.order_by(desc('rating')).all()
     serialized_cupcakes = [cupcake.serialize() for cupcake in cupcakes]
 
